@@ -1,0 +1,34 @@
+/*
+ * DeluxeChest - Plugin de cofres Deluxe para Minecraft
+ * Copyright (c) 2025 Jhonmmn
+ * Todos los derechos reservados.
+ */
+
+package com.deluxechest.listeners;
+
+import com.deluxechest.managers.ChestSystemManager;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.block.Block;
+import org.bukkit.Material;
+import org.bukkit.block.data.type.Chest;
+
+public class ChestPlaceListener implements Listener {
+
+    private final ChestSystemManager manager;
+
+    public ChestPlaceListener(ChestSystemManager m) {
+        this.manager = m;
+    }
+
+    @EventHandler
+    public void onPlace(BlockPlaceEvent e) {
+        Block b = e.getBlockPlaced();
+        if (b.getType() == Material.CHEST && e.getBlockAgainst().getType() == Material.CHEST) {
+            // ubicaciones
+            manager.registerNewSystem(e.getPlayer(), b.getLocation(), e.getBlockAgainst().getLocation());
+            e.getPlayer().sendMessage("Sistema DeluxeChest creado.");
+        }
+    }
+}
