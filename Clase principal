@@ -1,7 +1,6 @@
 /*
- * DeluxeChest - Plugin de cofres Deluxe para Minecraft
- * Copyright (c) 2025 jhonmmn
- * Todos los derechos reservados.
+ * DeluxeChest - Plugin de cofres Deluxe con sistema de páginas
+ * Copyright (c) 2025 Jhonmmn
  */
 
 package com.deluxechest;
@@ -24,8 +23,7 @@ public class DeluxeChest extends JavaPlugin {
         // Leer configuración ejemplo
         boolean debug = getConfig().getBoolean("debug-mode");
         getLogger().info("Debug mode: " + debug);
-    }
-    {
+
         manager = new ChestSystemManager(this);
         getServer().getPluginManager().registerEvents(new ChestPlaceListener(manager), this);
         getServer().getPluginManager().registerEvents(new ChestInteractListener(manager), this);
@@ -36,3 +34,6 @@ public class DeluxeChest extends JavaPlugin {
         return manager;
     }
 }
+
+
+
