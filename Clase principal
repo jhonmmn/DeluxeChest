@@ -1,28 +1,38 @@
 /*
- * DeluxeChest - Plugin de cofres personalizados para Bukkit/Spigot
+ * DeluxeChest - Plugin de cofres Deluxe para Minecraft
  * Copyright (c) 2025 jhonmmn
+ * Todos los derechos reservados.
  */
 
-package com.tunombre.deluxechest;
+package com.deluxechest;
 
+import com.deluxechest.listeners.ChestInteractListener;
+import com.deluxechest.listeners.ChestPlaceListener;
+import com.deluxechest.managers.ChestSystemManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class DeluxeChest extends JavaPlugin {
 
+    private ChestSystemManager manager;
+
     @Override
     public void onEnable() {
-        saveDefaultConfig(); // Crea config.yml si no existe
+        saveDefaultConfig();  // Guarda config.yml si no existe
         getConfig().options().copyDefaults(true);
         saveConfig();
 
-        getLogger().info("DeluxeChest habilitado!");
-
-        // Registrar comando
-        this.getCommand("deluxechest").setExecutor(new DeluxeChestCommand(this));
+        // Leer configuración ejemplo
+        boolean debug = getConfig().getBoolean("debug-mode");
+        getLogger().info("Debug mode: " + debug);
+    }
+    {
+        manager = new ChestSystemManager(this);
+        getServer().getPluginManager().registerEvents(new ChestPlaceListener(manager), this);
+        getServer().getPluginManager().registerEvents(new ChestInteractListener(manager), this);
+        getLogger().info("DeluxeChest activado");
     }
 
-    @Override
-    public void onDisable() {
-        getLogger().info("DeluxeChest deshabilitado!");
+    public ChestSystemManager getManager() {
+        return manager;
     }
 }
