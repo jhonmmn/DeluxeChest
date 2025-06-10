@@ -1,0 +1,105 @@
+/*
+ * DeluxeChest - Plugin de cofres Deluxe para Minecraft
+ * Copyright (c) 2025 Jhonmmn
+ * Todos los derechos reservados.
+ */
+
+package com.deluxechest.managers;
+
+import com.deluxechest.DeluxeChest;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+/**
+ * Clase encargada de gestionar los cofres físicos con páginas por jugador.
+ */
+public class ChestSystemManager {
+
+    // Mapa que asocia a cada jugador con sus datos de cofre
+    private final Map<UUID, DeluxeChestData> chests = new HashMap<>();
+
+    public ChestSystemManager(DeluxeChest deluxeChest) {
+    }
+
+    /**
+     * Registra un nuevo cofre doble para un jugador.
+     * Solo se permite un cofre doble por jugador.
+     *
+     * @param owner UUID del jugador dueño del cofre
+     * @param loc1  ubicación del primer cofre
+     * @param loc2  ubicación del segundo cofre (para el doble cofre)
+     * @return true si se registró exitosamente, false si ya existía
+     */
+    public boolean registerDoubleChest(UUID owner, Location loc1, Location loc2) {
+        if (!chests.containsKey(owner)) {
+            DeluxeChestData data = new DeluxeChestData(owner, loc1, loc2);
+            chests.put(owner, data);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Obtiene los datos del cofre del jugador.
+     *
+     * @param uuid UUID del jugador
+     * @return objeto DeluxeChestData o null si no tiene cofre
+     */
+    public DeluxeChestData getChest(UUID uuid) {
+        return chests.get(uuid);
+    }
+
+    /**
+     * Verifica si una ubicación corresponde a un cofre registrado.
+     *
+     * @param loc ubicación a verificar
+     * @return datos del cofre si se encuentra uno cercano (2 bloques de distancia), null si no
+     */
+    public DeluxeChestData getChestFromLocation(Location loc) {
+        for (DeluxeChestData chest : chests.values()) {
+            if (chest.isWithin(loc, 2, 2)) {
+                return chest;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Elimina el cofre registrado de un jugador (opcional si deseas resetear).
+     *
+     * @param uuid UUID del jugador
+     */
+    public void unregisterChest(UUID uuid) {
+        chests.remove(uuid);
+    }
+
+    /**
+     * Limpia todos los cofres registrados (por ejemplo, en onDisable).
+     */
+    public void clearAllChests() {
+        chests.clear();
+    }
+
+    /**
+     * Devuelve el mapa completo (lectura interna o debugging).
+     */
+    public Map<UUID, DeluxeChestData> getAllChests() {
+        return chests;
+    }
+
+    public void registerNewSystem(Player player, Location location, Location location1) {
+    }
+
+    public void click(Player p, int i) {
+    }
+
+    public void save(Player p, List<ItemStack> items) {
+    }
+}
