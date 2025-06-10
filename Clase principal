@@ -1,0 +1,28 @@
+/*
+ * DeluxeChest - Plugin de cofres personalizados para Bukkit/Spigot
+ * Copyright (c) 2025 jhonmmn
+ */
+
+package com.tunombre.deluxechest;
+
+import org.bukkit.plugin.java.JavaPlugin;
+
+public class DeluxeChest extends JavaPlugin {
+
+    @Override
+    public void onEnable() {
+        saveDefaultConfig(); // Crea config.yml si no existe
+        getConfig().options().copyDefaults(true);
+        saveConfig();
+
+        getLogger().info("DeluxeChest habilitado!");
+
+        // Registrar comando
+        this.getCommand("deluxechest").setExecutor(new DeluxeChestCommand(this));
+    }
+
+    @Override
+    public void onDisable() {
+        getLogger().info("DeluxeChest deshabilitado!");
+    }
+}
