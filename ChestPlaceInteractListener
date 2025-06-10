@@ -1,0 +1,50 @@
+/*
+ * DeluxeChest - Plugin de cofres Deluxe para Minecraft
+ * Copyright (c) 2025 Jhonmmn
+ * Todos los derechos reservados.
+ */
+
+package com.deluxechest.listeners;
+
+import com.deluxechest.managers.ChestSystemManager;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class ChestInteractListener implements Listener {
+
+    private final ChestSystemManager manager;
+
+    public ChestInteractListener(ChestSystemManager m) {
+        this.manager = m;
+    }
+
+    @EventHandler
+    public void onClick(InventoryClickEvent e) {
+        if (!(e.getWhoClicked() instanceof Player p)) return;
+        if (!e.getView().getTitle().startsWith("DeluxeChest Página")) return;
+        e.setCancelled(true);
+        if (e.getSlot() >= 0 && e.getSlot() <= 4) return; // no operables
+        if (e.getSlot() == 5) {
+            manager.click(p, 5);
+        }
+    }
+
+    @EventHandler
+    public void onClose(InventoryCloseEvent e) {
+        if (!(e.getPlayer() instanceof Player p)) return;
+        if (!e.getView().getTitle().startsWith("DeluxeChest Página")) return;
+
+        List<ItemStack> items = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            items.add(e.getInventory().getItem(i));
+        }
+        manager.save(p, items);
+    }
+}
