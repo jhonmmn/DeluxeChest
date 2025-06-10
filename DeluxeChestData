@@ -1,0 +1,67 @@
+/*
+ * DeluxeChest - Plugin de cofres Deluxe para Minecraft
+ * Copyright (c) 2025 Jhonmmn
+ * Todos los derechos reservados.
+ */
+
+package com.deluxechest.managers;
+
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Chest;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.*;
+
+public class DeluxeChestData {
+
+    private final UUID owner;
+    private final Location loc1, loc2;
+    private final List<List<ItemStack>> pages = new ArrayList<>();
+    private int current = 0;
+    private static final int MAX = 1000;
+
+    public DeluxeChestData(UUID owner, Location l1, Location l2) {
+        this.owner = owner;
+        this.loc1 = l1; this.loc2 = l2;
+        pages.add(new ArrayList<>(Collections.nCopies(5, null)));
+    }
+
+    public boolean isWithin(Location loc, int dx, int dz) {
+        return Math.abs(loc.getX() - loc1.getX()) <= dx && Math.abs(loc.getZ() - loc1.getZ()) <= dz;
+    }
+
+    public void openCurrent(Player p) {
+        Inventory inv = Bukkit.createInventory(null, 9, "DeluxeChest Página " + (current + 1));
+        List<ItemStack> page = pages.get(current);
+        for (int i = 0; i < 5; i++) inv.setItem(i, page.get(i));
+        inv.setItem(5, getNavItem());
+        p.openInventory(inv);
+    }
+
+    public void savePage(List<ItemStack> items) {
+        for (int i = 0; i < 5; i++) pages.get(current).set(i, items.get(i));
+        if (pages.get(current).stream().noneMatch(Objects::isNull) && pages.size() < MAX && current == pages.size() - 1) {
+            pages.add(new ArrayList<>(Collections.nCopies(5, null)));
+        }
+    }
+
+    public void nextPage() {
+        if (current < pages.size() - 1) current++;
+    }
+
+    private ItemStack getNavItem() {
+        ItemStack book = new ItemStack(Material.BOOK);
+        ItemMeta meta = book.getItemMeta();
+        meta.setDisplayName("Página " + (current+1) + "/" + pages.size());
+        book.setItemMeta(meta);
+        return book;
+    }
+
+    public void createInventory(Object o) {
+    }
+}
